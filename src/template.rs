@@ -3,6 +3,7 @@ use std::fs;
 use std::fs::File;
 use std::fmt;
 use std::io::{Read,Write};
+use std::error::Error;
 
 use compiler;
 use parser;
@@ -35,6 +36,28 @@ impl fmt::Debug for TemplateError {
             &FileReadError(ref val)     => write!(f, "FileReadError({})", val),
             &UnexpectedDataType(ref val) => write!(f, "UnexpectedDataType({})", val),
             &UnexpectedNodeType(ref val) => write!(f, "UnexpectedNodeType({})", val),
+        }
+    }
+}
+
+impl fmt::Display for TemplateError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            &StreamWriteError(ref val)  => write!(f, "StreamWriteError({})", val),
+            &FileReadError(ref val)     => write!(f, "FileReadError({})", val),
+            &UnexpectedDataType(ref val) => write!(f, "UnexpectedDataType({})", val),
+            &UnexpectedNodeType(ref val) => write!(f, "UnexpectedNodeType({})", val),
+        }
+    }
+}
+
+impl Error for TemplateError {
+    fn description(&self) -> &str {
+        match self {
+            &StreamWriteError(ref val)  => val,
+            &FileReadError(ref val)     => val,
+            &UnexpectedDataType(ref val) => val,
+            &UnexpectedNodeType(ref val) => val,
         }
     }
 }

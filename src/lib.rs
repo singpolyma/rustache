@@ -10,6 +10,7 @@ extern crate rustc_serialize;
 use std::fmt;
 use std::cell::RefCell;
 use std::collections::HashMap;
+use std::error::Error;
 
 use self::RustacheError::*;
 use self::Data::*;
@@ -38,6 +39,26 @@ impl fmt::Debug for RustacheError {
             &JsonError(ref val) => write!(f, "JsonError: {:?}", val),
             &FileError(ref val) => write!(f, "FileError: {:?}", val),
             &TemplateErrorType(ref val) => write!(f, "{:?}", val),
+        }
+    }
+}
+
+impl fmt::Display for RustacheError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            &JsonError(ref val) => write!(f, "{:?}", val),
+            &FileError(ref val) => write!(f, "{:?}", val),
+            &TemplateErrorType(ref val) => write!(f, "{:?}", val),
+        }
+    }
+}
+
+impl Error for RustacheError {
+    fn description(&self) -> &str {
+        match self {
+            &JsonError(ref val) => val,
+            &FileError(ref val) => val,
+            &TemplateErrorType(ref val) => val.description(),
         }
     }
 }
